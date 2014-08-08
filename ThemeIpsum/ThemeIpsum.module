@@ -17,9 +17,5 @@ class ThemeIpsum extends WireThemes {
 			'requires' => 'WireThemes'
 		);
 	}
-
-
-
-
-
+	
 }

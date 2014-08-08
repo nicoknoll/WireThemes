@@ -28,17 +28,19 @@ class WireThemes extends WireData implements Module, ConfigurableModule {
 			'theme' => '' // no theme by default
 		);
 	}
-	
+
 	/**
 	 * Populate default configuration (will be overwritten after constructor with user's own configuration)
 	 *
 	 */
 	public function __construct() {
-		$data = $this->getModuleConfigData($this); 
-		foreach(self::getDefaultConfig() as $key => $value) {
+		$defaultData = self::getDefaultConfig();
+		$data = array_merge($defaultData, $this->getModuleConfigData($this)); 
+
+		foreach($defaultData as $key => $value) {
 			$this->$key = $value;
 		}
-		
+
 		if($data['theme'] != '') {
 			// the root templates folder
 			$modulesRootUrl = wire('config')->urls->siteModules;
@@ -49,81 +51,80 @@ class WireThemes extends WireData implements Module, ConfigurableModule {
 			$moulesRootPath = wire('config')->paths->templates;
 		}
 
-		
+
 		// new paths
 		wire('config')->urls->set('templates', $modulesRootUrl.$data['theme'].'/');
 		wire('config')->paths->set('templates', $moulesRootPath.$data['theme'].'/');
-
 	}
-	
-	
+
+
 	/**
 	* We have to rewrite this function because wire('modules') is not loaded when this function is needed.
 	* 
 	*/
 	public function getModuleConfigData($className) {
-	
+
 		if(is_object($className)) $className = $className->className();
-		
+
 		$database = $this->wire('database'); 
 		$query = $database->prepare("SELECT data FROM modules WHERE class=:class"); // QA
 		$query->bindValue(":class", (string) $className, PDO::PARAM_INT); 
 		$query->execute();
 		$data = $query->fetchColumn(); 
 		$query->closeCursor();
-		
+
 		if(empty($data)) $data = array();
 		else $data = wireDecodeJSON($data); 
-	
+
 		return $data; 	
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Create the modules setting page
 	 *
 	 */
 	static public function getModuleConfigInputfields(array $data) {
-	
+
 		// this is a container for fields, basically like a fieldset
 		$fields = new InputfieldWrapper();
 		return $fields;
 	}
-	
-	
+
+
 	/**
 	 * Define an install function which automatically gets triggered by the Themes
 	 *
 	 */
-	public function ___install() {
+	final public function ___install() {
 		if($this == 'WireThemes') return;
 		// old data
 		$data = wire('modules')->getModuleConfigData('WireThemes');
-		
+
 		if($data['theme'] != '') throw new WireException('You only can use one frontend theme. '.$data['theme'].' is already installed. Please uninstall it before you install this one.');
-		
+
 		// new data
 		$data = array(
 			'theme' => (string)$this
 		);
-		
+
 		wire('modules')->saveModuleConfigData('WireThemes', $data);
 	}
-	
-	
-	
+
+
+
 	/**
 	* Define an uninstall function which automatically gets triggered by the Themes
 	*
 	*/
-	public function ___uninstall() {
+	final public function ___uninstall() {
 		if($this == 'WireThemes') return;
 
 		$data = array(
 			'theme' => ''
 		);
-		
+
 		wire('modules')->saveModuleConfigData('WireThemes', $data);
 	}
 
