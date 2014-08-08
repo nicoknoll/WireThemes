@@ -44,17 +44,17 @@ class WireThemes extends WireData implements Module, ConfigurableModule {
 		if($data['theme'] != '') {
 			// the root templates folder
 			$modulesRootUrl = wire('config')->urls->siteModules;
-			$moulesRootPath = wire('config')->paths->siteModules;
+			$modulesRootPath = wire('config')->paths->siteModules;
 		} else {
 			// the root templates folder
 			$modulesRootUrl = wire('config')->urls->templates;
-			$moulesRootPath = wire('config')->paths->templates;
+			$modulesRootPath = wire('config')->paths->templates;
 		}
 
 
 		// new paths
 		wire('config')->urls->set('templates', $modulesRootUrl.$data['theme'].'/');
-		wire('config')->paths->set('templates', $moulesRootPath.$data['theme'].'/');
+		wire('config')->paths->set('templates', $modulesRootPath.$data['theme'].'/');
 	}
 
 
