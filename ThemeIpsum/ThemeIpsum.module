@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * ThemeIpsum
+ *
+ * By Nico Knoll (http://nico.is/)
+ *
+ */
+
+class ThemeIpsum extends WireThemes {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => __('ThemeIpsum'),
+			'version' => '1',
+			'summary' => __('ThemeIpsum'),
+			'requires' => 'WireThemes'
+		);
+	}
+
+
+
+
+
+}
