@@ -1,21 +1,37 @@
 <?php
 
 /**
- * ThemeIpsum
+ * ThemeIpsum - Demonstrating of a Theme for ProcessWire
  *
  * By Nico Knoll (http://nico.is/)
  *
  */
 
-class ThemeIpsum extends WireThemes {
-
-	public static function getModuleInfo() {
-		return array(
-			'title' => __('ThemeIpsum'),
-			'version' => '1',
-			'summary' => __('ThemeIpsum'),
-			'requires' => 'WireThemes'
-		);
-	}
+// to avoid class errors if WireThemes is not installed
+if(class_exists('WireThemes')) {
+	class ThemeIpsum extends WireThemes {
 	
+		public static function getModuleInfo() {
+			return array(
+				'title' => __('ThemeIpsum'),
+				'version' => '1',
+				'summary' => __('ThemeIpsum'),
+				'requires' => 'WireThemes'
+			);
+		}
+		
+		/**
+		 * Create the modules setting page
+		 *
+		 */
+		static public function getModuleConfigInputfields(array $data) {
+			
+			$fields = new InputfieldWrapper();
+			// define required fields like the following: 
+			// $fields->add(self::addRequiredField($fieldName, $fieldType, $fieldValue = '', $fieldLabel = ''));
+			$fields->add(self::addRequiredField('body', 'FieldtypeTextarea', $data['body'], ''));
+			return $fields;
+			
+		}
+	}
 }

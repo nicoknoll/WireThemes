@@ -12,8 +12,8 @@ class WireThemes extends WireData implements Module, ConfigurableModule {
 	public static function getModuleInfo() {
 		return array(
 			'title' => __('WireThemes'),
-			'version' => '1',
-			'summary' => __('Autoload new templates path'),
+			'version' => '0.1.0',
+			'summary' => __('A Theme Switch for Processwire.'),
 			'autoload' => true
 		);
 	}
@@ -51,10 +51,23 @@ class WireThemes extends WireData implements Module, ConfigurableModule {
 			$modulesRootPath = wire('config')->paths->templates;
 		}
 
-
 		// new paths
 		wire('config')->urls->set('templates', $modulesRootUrl.$data['theme'].'/');
 		wire('config')->paths->set('templates', $modulesRootPath.$data['theme'].'/');
+	}
+	
+	public function init() {
+		$this->addHook('ProcessPageView::ready', $this, 'replaceFields');
+	}
+	
+	public function replaceFields(HookEvent $event) {
+		// don't do this if in backend
+		if($this->page->template == 'admin') return false;
+		
+		$themeConfig = $this->modules->getModuleConfigData($this->theme);	
+		foreach($themeConfig as $oldName => $newName) {
+			$this->page->set($oldName, $this->page->{$newName});
+		}
 	}
 
 
@@ -91,7 +104,40 @@ class WireThemes extends WireData implements Module, ConfigurableModule {
 		$fields = new InputfieldWrapper();
 		return $fields;
 	}
+	
+	
+	static protected function addRequiredField($fieldName, $fieldType, $fieldValue = '', $fieldLabel = '') {
+		
+		$selectableFields = self::getFields($fieldType);
+		
+		$field = wire('modules')->get('InputfieldSelect');
+		$field->name = $fieldName;
+		foreach($selectableFields as $selectableField) {
+			$options = array();
+			
+			if($selectableField->name == $fieldValue) $options['checked'] = 'checked';
+			elseif($selectableField->name == $fieldName && $fieldValue == '') $options['checked'] = 'checked';
+			
+			$field->addOption($selectableField->name, null, $options);
+		}
+		$field->label = $fieldLabel;
+		
+		return $field;
+	}
+	
+	static protected function getFields($fieldType = '') {
+		if($fieldType == '') $selector = '*';
+		else $selector = 'type='.$fieldType;
+		
+		$fields = wire('fields')->find($selector);
+		
+		foreach($fields as $field) {
+			if($field->flags & Field::flagSystem ) continue; //  && $field->name != 'title' probably don't needed because title is available anyway
+			$return[$field->name] = $field;
+		}
 
+		return $return;
+	}
 
 	/**
 	 * Define an install function which automatically gets triggered by the Themes
