@@ -28,7 +28,7 @@ To avoid this the Theme designer can add a field requirement into his Theme conf
 		static public function getModuleConfigInputfields(array $data) {
 			
 			$fields = new InputfieldWrapper();
-			$fields->add(self::addRequiredField('body', 'FieldtypeTextarea', $data['body'], ''));
+			$fields->add(self::addRequiredField('body', 'FieldtypeTextarea', $data['body'], 'The content field'));
 			return $fields;
 			
 		}
