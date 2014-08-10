@@ -25,13 +25,13 @@ The person who made the Theme of course can't know this and maybe is using $page
 To avoid this the Theme designer can add a field requirement into his Theme config as easy as in the following snippet:
 
 <pre>
-		static public function getModuleConfigInputfields(array $data) {
+static public function getModuleConfigInputfields(array $data) {
 			
-			$fields = new InputfieldWrapper();
-			$fields->add(self::addRequiredField('body', 'FieldtypeTextarea', $data['body'], 'The content field'));
-			return $fields;
+	$fields = new InputfieldWrapper();
+	$fields->add(self::addRequiredField('body', 'FieldtypeTextarea', $data['body'], 'The content field'));
+	return $fields;
 			
-		}
+}
 </pre>
 
 This adds an Inputfield where you can choose "content" field as assignment.
