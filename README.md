@@ -24,8 +24,7 @@ You have a field called "content" which has FieldtypeTextarea and includes all o
 The person who made the Theme of course can't know this and maybe is using $page->body instead. Nothing would be displayed.
 To avoid this the Theme designer can add a field requirement into his Theme config as easy as in the following snippet:
 
-<pre>
-<?php
+```php
 static public function getModuleConfigInputfields(array $data) {
 			
 	$fields = new InputfieldWrapper();
@@ -33,7 +32,6 @@ static public function getModuleConfigInputfields(array $data) {
 	return $fields;
 			
 }
-?>
-</pre>
+```
 
 This adds an Inputfield where you can choose "content" field as assignment.
